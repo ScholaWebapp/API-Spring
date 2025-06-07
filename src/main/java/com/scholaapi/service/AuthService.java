@@ -10,6 +10,7 @@ import com.scholaapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class AuthService {
@@ -20,8 +21,12 @@ public class AuthService {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Transactional
     public void register(RegisterRequest request) {
+
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Email already taken");
         }
@@ -36,9 +41,10 @@ public class AuthService {
         Account account = new Account();
         account.setUser(user);
         account.setProviderId(request.getEmail());
-        account.setPasswordHash("hashed_password"); // Replace with real hash later
+        account.setPasswordHash(passwordEncoder.encode(request.getPassword())); // Replace with real hash later
         account.setRole("NORMAL");
 
         accountRepository.save(account);
+
     }
 }

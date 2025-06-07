@@ -52,6 +52,12 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Bcrypt to hash password -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
 
         <!-- PostgreSQL Driver -->
         <dependency>
