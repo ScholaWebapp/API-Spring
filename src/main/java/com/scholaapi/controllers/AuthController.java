@@ -4,10 +4,7 @@ import com.scholaapi.dto.RegisterRequest;
 import com.scholaapi.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -21,14 +18,28 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest request) {
-        authService.register(request);
+    public ResponseEntity<String> register(
+//            @Valid
+            @RequestBody
+            RegisterRequest request
+    ) {
+
+
 
         System.out.println("Received registration request:");
         System.out.println("First Name: " + request.getFirstName());
         System.out.println("Last Name: " + request.getLastName());
         System.out.println("Email: " + request.getEmail());
+        System.out.println("Password: " + request.getPassword());
+
+
+//        authService.register(request);
+
 
         return ResponseEntity.ok("Registration successful!");
+    }
+    @GetMapping("/test")
+    public ResponseEntity<String> test(){
+        return ResponseEntity.ok("Test successful!");
     }
 }

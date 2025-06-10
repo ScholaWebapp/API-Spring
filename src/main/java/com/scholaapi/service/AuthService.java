@@ -31,6 +31,7 @@ public class AuthService {
             throw new RuntimeException("Email already taken");
         }
 
+
         User user = new User();
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
@@ -42,6 +43,7 @@ public class AuthService {
         account.setUser(user);
         account.setProviderId(request.getEmail());
         account.setPasswordHash(passwordEncoder.encode(request.getPassword())); // Replace with real hash later
+//        account.setPasswordHash(request.getPassword()); // Replace with real hash later
         account.setRole("NORMAL");
 
         accountRepository.save(account);
