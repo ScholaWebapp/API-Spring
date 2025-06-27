@@ -18,7 +18,7 @@ public class Account {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String uuid = UUID.randomUUID().toString();
+    private UUID uuid = UUID.randomUUID();
 
     @ManyToOne
     @JoinColumn(name = "user_uuid", referencedColumnName = "uuid")
