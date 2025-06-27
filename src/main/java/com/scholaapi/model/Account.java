@@ -20,7 +20,7 @@ public class Account {
     @Column(nullable = false, unique = true)
     private String uuid = UUID.randomUUID().toString();
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_uuid", referencedColumnName = "uuid")
     private User user;
 
