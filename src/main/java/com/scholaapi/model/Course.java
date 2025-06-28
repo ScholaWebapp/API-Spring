@@ -10,30 +10,37 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "organizations")
+@Table(name = "courses")
 @Getter
 @Setter
-public class Organization {
+public class Course {
 
     @Id
     @Column(name = "uuid", nullable = false, updatable = false, columnDefinition = "UUID")
     private UUID uuid = UUID.randomUUID();
 
     @ManyToOne
-    @JoinColumn(name = "user_uuid", referencedColumnName = "uuid")
-    private User user; // Creator/owner
+    @JoinColumn(name = "organization_uuid", referencedColumnName = "uuid")
+    private Organization organization;
 
     @Column(nullable = false)
-    private String name;
+    private String title;
+
+    @Column(nullable = false)
+    private String category;
 
     @Column(columnDefinition = "TEXT")
     private String description;
+
+    @ManyToOne
+    @JoinColumn(name = "professor_uuid", referencedColumnName = "uuid")
+    private User professor;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @ElementCollection
-    @CollectionTable(name = "organization_members", joinColumns = @JoinColumn(name = "organization_uuid"))
-    @Column(name = "member_uuid", columnDefinition = "UUID")
-    private List<UUID> members = new ArrayList<>();
+    @CollectionTable(name = "course_modules", joinColumns = @JoinColumn(name = "course_uuid"))
+    @Column(name = "module_uuid", columnDefinition = "UUID")
+    private List<UUID> modules = new ArrayList<>();
 } 

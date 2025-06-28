@@ -36,6 +36,9 @@ public class OrganizationService {
         organization.setName("Test Organization");
         organization.setDescription("This is a test organization");
         
+        // Add the creator as a member
+        organization.getMembers().add(user.getUuid());
+        
         return organizationRepository.save(organization);
     }
     
@@ -49,6 +52,9 @@ public class OrganizationService {
         organization.setName(name);
         organization.setDescription(description);
         
+        // Add the creator as a member
+        organization.getMembers().add(user.getUuid());
+        
         return organizationRepository.save(organization);
     }
     
@@ -58,5 +64,14 @@ public class OrganizationService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Organization not found");
         }
         organizationRepository.deleteById(organizationUuid);
+    }
+    
+    // Get all organizations except those created by a specific user
+    public List<Organization> getAllOrganizationsExceptByUser(UUID userUuid) {
+        // Verify user exists
+        if (!userRepository.existsById(userUuid)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+        return organizationRepository.findAllExceptByUserUuid(userUuid);
     }
 } 

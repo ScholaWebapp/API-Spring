@@ -44,4 +44,10 @@ public class OrganizationController {
         organizationService.deleteOrganization(uuid);
         return ResponseEntity.noContent().build();
     }
+    
+    // Get all organizations except those created by a specific user
+    @GetMapping("/others/{uuid}")
+    public ResponseEntity<?> getAllOrganizationsExceptByUser(@PathVariable UUID uuid) {
+        return ResponseEntity.ok(organizationService.getAllOrganizationsExceptByUser(uuid));
+    }
 } 
