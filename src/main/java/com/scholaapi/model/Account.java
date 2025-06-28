@@ -8,16 +8,12 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "accounts")
-
 @Getter
 @Setter
 public class Account {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false, unique = true)
+    @Column(name = "uuid", nullable = false, updatable = false, columnDefinition = "UUID")
     private UUID uuid = UUID.randomUUID();
 
     @ManyToOne
