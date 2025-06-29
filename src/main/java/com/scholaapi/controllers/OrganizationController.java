@@ -1,5 +1,7 @@
 package com.scholaapi.controllers;
 
+import com.scholaapi.dto.OrganizationRequest;
+import com.scholaapi.dto.OrganizationTestRequest;
 import com.scholaapi.service.OrganizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,17 +27,18 @@ public class OrganizationController {
     }
     
     // Create organization for testing (just with UUID)
-    @PostMapping("/test/{uuid}")
-    public ResponseEntity<?> createOrganizationForTesting(@PathVariable UUID uuid) {
-        return ResponseEntity.ok(organizationService.createOrganizationForTesting(uuid));
+    @PostMapping("/test")
+    public ResponseEntity<?> createOrganizationForTesting(@RequestBody OrganizationTestRequest request) {
+        return ResponseEntity.ok(organizationService.createOrganizationForTesting(request.getUserUuid()));
     }
     
     // Create organization with full details
     @PostMapping("/create")
-    public ResponseEntity<?> createOrganization(@RequestParam UUID userUuid, 
-                                               @RequestParam String name, 
-                                               @RequestParam String description) {
-        return ResponseEntity.ok(organizationService.createOrganization(userUuid, name, description));
+    public ResponseEntity<?> createOrganization(@RequestBody OrganizationRequest request) {
+        return ResponseEntity.ok(organizationService.createOrganization(
+                request.getUserUuid(),
+                request.getName(),
+                request.getDescription()));
     }
     
     // Delete organization by ID

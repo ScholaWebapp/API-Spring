@@ -1,5 +1,6 @@
 package com.scholaapi.controllers;
 
+import com.scholaapi.dto.CourseRequest;
 import com.scholaapi.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,11 +33,12 @@ public class CourseController {
     
     // Create course with full details
     @PostMapping("/create")
-    public ResponseEntity<?> createCourse(@RequestParam UUID organizationUuid,
-                                         @RequestParam UUID professorUuid,
-                                         @RequestParam String title,
-                                         @RequestParam String category,
-                                         @RequestParam String description) {
-        return ResponseEntity.ok(courseService.createCourse(organizationUuid, professorUuid, title, category, description));
+    public ResponseEntity<?> createCourse(@RequestBody CourseRequest request) {
+        return ResponseEntity.ok(courseService.createCourse(
+                request.getOrganizationUuid(),
+                request.getProfessorUuid(),
+                request.getTitle(),
+                request.getCategory(),
+                request.getDescription()));
     }
 } 

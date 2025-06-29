@@ -1,5 +1,6 @@
 package com.scholaapi.controllers;
 
+import com.scholaapi.dto.EnrollmentRequest;
 import com.scholaapi.service.CourseEnrollmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,16 +21,14 @@ public class CourseEnrollmentController {
 
     // Enroll user in a course
     @PostMapping("/enroll")
-    public ResponseEntity<?> enrollUserInCourse(@RequestParam UUID userUuid, 
-                                               @RequestParam UUID courseUuid) {
-        return ResponseEntity.ok(courseEnrollmentService.enrollUserInCourse(userUuid, courseUuid));
+    public ResponseEntity<?> enrollUserInCourse(@RequestBody EnrollmentRequest request) {
+        return ResponseEntity.ok(courseEnrollmentService.enrollUserInCourse(request.getUserUuid(), request.getCourseUuid()));
     }
 
     // Unenroll user from a course
     @DeleteMapping("/unenroll")
-    public ResponseEntity<?> unenrollUserFromCourse(@RequestParam UUID userUuid, 
-                                                   @RequestParam UUID courseUuid) {
-        courseEnrollmentService.unenrollUserFromCourse(userUuid, courseUuid);
+    public ResponseEntity<?> unenrollUserFromCourse(@RequestBody EnrollmentRequest request) {
+        courseEnrollmentService.unenrollUserFromCourse(request.getUserUuid(), request.getCourseUuid());
         return ResponseEntity.noContent().build();
     }
 } 
