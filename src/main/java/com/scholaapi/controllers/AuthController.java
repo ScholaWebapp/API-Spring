@@ -2,14 +2,13 @@ package com.scholaapi.controllers;
 
 import com.scholaapi.dto.RegisterRequest;
 import com.scholaapi.model.Account;
-import com.scholaapi.model.AuthRequest;
-import com.scholaapi.model.AuthResponse;
+import com.scholaapi.dto.AuthRequest;
+import com.scholaapi.dto.AuthResponse;
 import com.scholaapi.model.User;
 import com.scholaapi.repository.AccountRepository;
 import com.scholaapi.repository.UserRepository;
 import com.scholaapi.service.AuthService;
 import com.scholaapi.service.JwtService;
-import com.scholaapi.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,7 +63,7 @@ public class AuthController {
         }
 
 
-        String token = jwtService.generateToken(user.getEmail());
+        String token = jwtService.generateToken(user.getEmail(), user.getUuid(), user.getFirstName(), user.getLastName());
         return ResponseEntity.ok(new AuthResponse(token));
     }
 

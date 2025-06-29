@@ -1,4 +1,4 @@
-package com.scholaapi.model;
+package com.scholaapi.dto;
 
 import lombok.Data;
 import lombok.Getter;

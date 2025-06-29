@@ -1,6 +1,5 @@
-package com.scholaapi.model;
+package com.scholaapi.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
