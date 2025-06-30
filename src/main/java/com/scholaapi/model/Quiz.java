@@ -10,36 +10,25 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "courses")
+@Table(name = "quizzes")
 @Getter
 @Setter
-public class Course {
+public class Quiz {
 
     @Id
     @Column(name = "uuid", nullable = false, updatable = false, columnDefinition = "UUID")
     private UUID uuid = UUID.randomUUID();
 
-    @ManyToOne
-    @JoinColumn(name = "organization_uuid", referencedColumnName = "uuid")
-    private Organization organization;
-
     @Column(nullable = false)
     private String title;
-
-    @Column(nullable = false)
-    private String category;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "professor_uuid", referencedColumnName = "uuid")
-    private User professor;
-
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @OrderBy("orderIndex ASC")
-    private List<Module> modules = new ArrayList<>();
+    private List<QuizQuestion> questions = new ArrayList<>();
 } 
