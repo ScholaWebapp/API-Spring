@@ -29,4 +29,7 @@ public interface CourseEnrollmentRepository extends JpaRepository<CourseEnrollme
     
     // Find enrollments by status
     List<CourseEnrollment> findByUserUuidAndStatus(UUID userUuid, String status);
+    
+    // Delete all enrollments for a course
+    void deleteByCourseUuid(UUID courseUuid);
 } 

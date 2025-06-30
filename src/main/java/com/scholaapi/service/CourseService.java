@@ -1,11 +1,13 @@
 package com.scholaapi.service;
 
+import com.scholaapi.dto.CourseRequest;
 import com.scholaapi.model.Course;
 import com.scholaapi.model.Organization;
 import com.scholaapi.model.User;
 import com.scholaapi.repository.CourseRepository;
 import com.scholaapi.repository.OrganizationRepository;
 import com.scholaapi.repository.UserRepository;
+import com.scholaapi.repository.CourseEnrollmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,9 @@ public class CourseService {
     
     @Autowired
     private OrganizationRepository organizationRepository;
+    
+    @Autowired
+    private CourseEnrollmentRepository courseEnrollmentRepository;
 
     // Get all courses in the database
     public List<Course> getAllCourses() {
@@ -66,5 +71,51 @@ public class CourseService {
         course.setDescription(description);
         
         return courseRepository.save(course);
+    }
+
+    // Delete course and all its enrollments
+    public void deleteCourse(UUID courseUuid) {
+        // Check if course exists
+        if (!courseRepository.existsById(courseUuid)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
+        }
+        
+        // Delete all enrollments for this course first (to avoid foreign key constraints)
+        courseEnrollmentRepository.deleteByCourseUuid(courseUuid);
+        
+        // Delete the course
+        courseRepository.deleteById(courseUuid);
+    }
+    
+    // Get specific course by ID
+    public Course getCourseById(UUID courseUuid) {
+        return courseRepository.findById(courseUuid)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found"));
+    }
+    
+    // Update course details
+    public Course updateCourse(UUID courseUuid, CourseRequest request) {
+        Course course = courseRepository.findById(courseUuid)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found"));
+        
+        // Update course fields
+        course.setTitle(request.getTitle());
+        course.setCategory(request.getCategory());
+        course.setDescription(request.getDescription());
+        
+        // Note: We're not updating organization or professor for data integrity
+        // If you need to change these, it should be a separate operation
+        
+        return courseRepository.save(course);
+    }
+    
+    // Get courses by organization
+    public List<Course> getCoursesByOrganization(UUID organizationUuid) {
+        // Verify organization exists
+        if (!organizationRepository.existsById(organizationUuid)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Organization not found");
+        }
+        
+        return courseRepository.findByOrganizationUuid(organizationUuid);
     }
 } 
