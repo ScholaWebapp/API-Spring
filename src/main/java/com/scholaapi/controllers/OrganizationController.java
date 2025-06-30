@@ -35,10 +35,15 @@ public class OrganizationController {
     // Create organization with full details
     @PostMapping("/create")
     public ResponseEntity<?> createOrganization(@RequestBody OrganizationRequest request) {
-        return ResponseEntity.ok(organizationService.createOrganization(
-                request.getUserUuid(),
-                request.getName(),
-                request.getDescription()));
+        System.out.println(request.getUserUuid());
+        System.out.println(request.getName());
+        return ResponseEntity.ok(
+                organizationService.createOrganization(
+                    request.getUserUuid(),
+                    request.getName(),
+                    request.getDescription()
+                )
+        );
     }
     
     // Delete organization by ID

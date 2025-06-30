@@ -9,6 +9,7 @@ import com.scholaapi.repository.AccountRepository;
 import com.scholaapi.repository.UserRepository;
 import com.scholaapi.service.AuthService;
 import com.scholaapi.service.JwtService;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,7 +64,14 @@ public class AuthController {
         }
 
 
-        String token = jwtService.generateToken(user.getEmail(), user.getUuid(), user.getFirstName(), user.getLastName());
+
+        String token = jwtService.generateToken(
+                user.getEmail(),
+                user.getUuid(),
+                user.getFirstName(),
+                user.getLastName(),
+                account.getRole()
+        );
         return ResponseEntity.ok(new AuthResponse(token));
     }
 
@@ -88,18 +96,17 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<String> verifyTokenAuthenticity(@RequestHeader("Authorization") String authHeader) {
-        // Strip "Bearer " prefix
+    public ResponseEntity<Claims> verifyTokenAuthenticity(@RequestHeader("Authorization") String authHeader) {
+
         String token = authHeader.replace("Bearer ", "");
 
-        // Optionally extract user info if needed
-        boolean isValid = jwtService.isTokenValid(token);
+        Claims isValid = jwtService.isTokenValid(token);
 
-        if (!isValid) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
+        if (isValid.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(isValid);
         }
 
-        return ResponseEntity.ok("Token is valid 🎉");
+        return ResponseEntity.ok(isValid);
     }
 
 

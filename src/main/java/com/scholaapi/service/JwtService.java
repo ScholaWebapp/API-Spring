@@ -1,9 +1,12 @@
 package com.scholaapi.service;
 
+import com.scholaapi.model.Account;
+import com.scholaapi.repository.AccountRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -20,15 +23,21 @@ public class JwtService {
 
     private final String SECRET = "B7yZ93jeT5fP2kWlR91xqDUQeT74vXFz";
 
+    @Autowired
+    private AccountRepository accountRepository;
 
     private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
 
-    public String generateToken(String email, UUID uuid, String firstName, String lastName) {
+    public String generateToken(String email, UUID uuid, String firstName, String lastName, String role) {
+
         Map<String, Object> claims = new HashMap<>();
+
+        claims.put("uuid", uuid);
         claims.put("email", email);
         claims.put("firstName", firstName);
         claims.put("lastName", lastName);
-        
+        claims.put("role", role);
+
         return Jwts.builder()
                 .setSubject(uuid.toString())  // UUID as subject
                 .setClaims(claims)
@@ -38,21 +47,18 @@ public class JwtService {
                 .compact();
     }
 
-    public boolean isTokenValid(String token) {
+    public Claims isTokenValid(String token) {
+
         try {
-            Claims claims = Jwts.parserBuilder()
+            return Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-
-            Date expiration = claims.getExpiration();
-
-            return expiration.after(new Date());
         } catch (JwtException | IllegalArgumentException e) {
-            // Token is invalid (expired, malformed, tampered, etc.)
-            return false;
+            return null;
         }
+
     }
 
     public String extractEmail(String token) {
