@@ -23,4 +23,8 @@ public interface AccountRepository extends JpaRepository<Account, UUID> {
     @Modifying
     @Query("UPDATE Account a SET a.role = 'BANNED' WHERE a.user.uuid = :uuid")
     void banByUserUuid(@Param("uuid") UUID uuid);
+
+    @Modifying
+    @Query("UPDATE Account a SET a.role = 'NORMAL' WHERE a.user.uuid = :uuid")
+    void unbanByUserUuid(@Param("uuid") UUID uuid);
 }

@@ -16,4 +16,9 @@ public class AccountService {
     public void banUser(UUID uuid) {
         accountRepository.banByUserUuid(uuid);
     }
+
+    @Transactional
+    public void unbanUser(UUID uuid) {
+        accountRepository.unbanByUserUuid(uuid);
+    }
 }

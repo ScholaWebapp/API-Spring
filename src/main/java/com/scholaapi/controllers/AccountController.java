@@ -16,9 +16,15 @@ public class AccountController {
         this.accountService = accountService;
     }
 
-    @PostMapping("/{uuid}")
+    @PostMapping("/{uuid}/ban")
     public ResponseEntity<?> banUser(@PathVariable UUID uuid) {
         accountService.banUser(uuid);
         return ResponseEntity.ok("User banned.");
+    }
+
+    @PostMapping("/{uuid}/unban")
+    public ResponseEntity<?> unbanUser(@PathVariable UUID uuid) {
+        accountService.unbanUser(uuid);
+        return ResponseEntity.ok("User unbanned.");
     }
 }
