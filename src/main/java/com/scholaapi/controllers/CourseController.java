@@ -41,4 +41,29 @@ public class CourseController {
                 request.getCategory(),
                 request.getDescription()));
     }
+    
+    // Delete course by ID
+    @DeleteMapping("/{uuid}")
+    public ResponseEntity<?> deleteCourse(@PathVariable UUID uuid) {
+        courseService.deleteCourse(uuid);
+        return ResponseEntity.ok("Course deleted successfully.");
+    }
+    
+    // Get specific course by ID
+    @GetMapping("/{uuid}")
+    public ResponseEntity<?> getCourseById(@PathVariable UUID uuid) {
+        return ResponseEntity.ok(courseService.getCourseById(uuid));
+    }
+    
+    // Update course details
+    @PutMapping("/{uuid}")
+    public ResponseEntity<?> updateCourse(@PathVariable UUID uuid, @RequestBody CourseRequest request) {
+        return ResponseEntity.ok(courseService.updateCourse(uuid, request));
+    }
+    
+    // Get courses by organization
+    @GetMapping("/organization/{organizationUuid}")
+    public ResponseEntity<?> getCoursesByOrganization(@PathVariable UUID organizationUuid) {
+        return ResponseEntity.ok(courseService.getCoursesByOrganization(organizationUuid));
+    }
 } 
