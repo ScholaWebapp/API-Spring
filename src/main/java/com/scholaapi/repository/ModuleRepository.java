@@ -12,5 +12,10 @@ import java.util.UUID;
 
 @Repository
 public interface ModuleRepository extends JpaRepository<Module, UUID> {
-    List<Module> findByCourseUuidOrderByOrderIndexAsc(UUID courseUuid);
-} 
+    List<Module> findByCourse_UuidOrderByOrderIndexAsc(UUID courseUuid);
+    
+    // Delete modules by course UUID
+    @Modifying
+    @Query("DELETE FROM Module m WHERE m.course.uuid = :courseUuid")
+    void deleteByCourseUuid(@Param("courseUuid") UUID courseUuid);
+}
