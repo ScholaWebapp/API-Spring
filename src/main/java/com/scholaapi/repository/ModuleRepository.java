@@ -9,5 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface ModuleRepository extends JpaRepository<Module, UUID> {
-    List<Module> findByCourseUuidOrderByOrderIndexAsc(UUID courseUuid);
+    List<Module> findByCourse_UuidOrderByOrderIndexAsc(UUID courseUuid);
 } 

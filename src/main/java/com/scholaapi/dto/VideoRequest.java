@@ -6,8 +6,9 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class ModuleRequest {
-    private UUID courseUuid;
+public class VideoRequest {
+    private UUID moduleUuid;
     private String title;
     private String description;
+    private String duration; // Optional - can be null. Format: "15:30" or "1:25:30"
 } 

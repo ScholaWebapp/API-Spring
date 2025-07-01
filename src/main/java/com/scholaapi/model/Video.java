@@ -23,8 +23,11 @@ public class Video {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "video_url", nullable = false)
-    private String videoUrl;
+    @Column(name = "filename", nullable = false)
+    private String filename;
+
+    @Column(name = "duration")
+    private String duration;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();

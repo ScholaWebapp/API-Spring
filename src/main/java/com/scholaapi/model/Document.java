@@ -23,8 +23,8 @@ public class Document {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "file_url", nullable = false)
-    private String fileUrl;
+    @Column(name = "filename", nullable = false)
+    private String filename;
 
     @Column(name = "file_type", nullable = false)
     private String fileType; // PDF, DOC, etc.

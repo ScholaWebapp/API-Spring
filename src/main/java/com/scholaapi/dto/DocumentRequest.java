@@ -6,8 +6,9 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class ModuleRequest {
-    private UUID courseUuid;
+public class DocumentRequest {
+    private UUID moduleUuid;
     private String title;
     private String description;
+    private String fileType; // PDF, DOC, DOCX, TXT
 } 
