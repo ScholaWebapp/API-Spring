@@ -4,6 +4,7 @@ import com.scholaapi.service.AccountService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -14,6 +15,12 @@ public class AccountController {
 
     public AccountController(AccountService accountService) {
         this.accountService = accountService;
+    }
+
+    @GetMapping("/role/{uuid}")
+    public ResponseEntity<Optional<String>> getUserRole(@PathVariable UUID uuid){
+        Optional<String> role = accountService.getAccountRole(uuid);
+        return ResponseEntity.ok(role);
     }
 
     @PostMapping("/{uuid}/ban")
