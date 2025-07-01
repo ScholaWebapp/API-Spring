@@ -5,12 +5,14 @@ import com.scholaapi.model.Course;
 import com.scholaapi.model.Organization;
 import com.scholaapi.model.User;
 import com.scholaapi.repository.CourseRepository;
-import com.scholaapi.repository.OrganizationRepository;
 import com.scholaapi.repository.UserRepository;
 import com.scholaapi.repository.CourseEnrollmentRepository;
+import com.scholaapi.repository.OrganizationRepository;
+import com.scholaapi.repository.ModuleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -33,6 +35,9 @@ public class CourseService {
     
     @Autowired
     private CourseEnrollmentRepository courseEnrollmentRepository;
+    
+    @Autowired
+    private ModuleRepository moduleRepository;
 
     // Get all courses in the database
     public List<Course> getAllCourses() {
@@ -73,15 +78,19 @@ public class CourseService {
         return courseRepository.save(course);
     }
 
-    // Delete course and all its enrollments
+    // Delete course and all its enrollments and modules with recursive cascading
+    @Transactional
     public void deleteCourse(UUID courseUuid) {
         // Check if course exists
         if (!courseRepository.existsById(courseUuid)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
         }
         
-        // Delete all enrollments for this course first (to avoid foreign key constraints)
+        // Delete all enrollments for this course
         courseEnrollmentRepository.deleteByCourseUuid(courseUuid);
+        
+        // Delete all modules in this course (this will cascade to resources)
+        moduleRepository.deleteByCourseUuid(courseUuid);
         
         // Delete the course
         courseRepository.deleteById(courseUuid);

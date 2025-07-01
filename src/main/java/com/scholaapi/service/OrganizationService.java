@@ -4,9 +4,11 @@ import com.scholaapi.model.Organization;
 import com.scholaapi.model.User;
 import com.scholaapi.repository.OrganizationRepository;
 import com.scholaapi.repository.UserRepository;
+import com.scholaapi.repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -20,6 +22,9 @@ public class OrganizationService {
     
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private CourseRepository courseRepository;
 
     // Get all organizations created by a specific user
     public List<Organization> getOrganizationsByCreator(UUID creatorUuid) {
@@ -58,11 +63,17 @@ public class OrganizationService {
         return organizationRepository.save(organization);
     }
     
-    // Delete organization by ID
+    // Delete organization by ID with recursive cascading
+    @Transactional
     public void deleteOrganization(UUID organizationUuid) {
         if (!organizationRepository.existsById(organizationUuid)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Organization not found");
         }
+        
+        // Delete all courses in this organization (this will cascade to modules, resources, enrollments)
+        courseRepository.deleteByOrganizationUuid(organizationUuid);
+        
+        // Delete the organization
         organizationRepository.deleteById(organizationUuid);
     }
     
