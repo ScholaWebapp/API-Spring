@@ -11,4 +11,7 @@ import java.util.UUID;
 public interface ResourceRepository extends JpaRepository<Resource, UUID> {
     List<Resource> findByModuleUuidOrderByOrderIndexAsc(UUID moduleUuid);
     List<Resource> findByModuleUuidAndResourceTypeOrderByOrderIndexAsc(UUID moduleUuid, Resource.ResourceType resourceType);
+    java.util.Optional<Resource> findByVideoUuid(UUID videoUuid);
+    java.util.Optional<Resource> findByDocumentUuid(UUID documentUuid);
+    java.util.Optional<Resource> findByQuizUuid(UUID quizUuid);
 } 

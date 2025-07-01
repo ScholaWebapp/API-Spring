@@ -25,6 +25,9 @@ public class Quiz {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "passing_score")
+    private Integer passingScore; // percentage
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 

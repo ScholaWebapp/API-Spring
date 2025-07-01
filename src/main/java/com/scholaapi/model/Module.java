@@ -22,6 +22,11 @@ public class Module {
     @ManyToOne
     @JoinColumn(name = "course_uuid", referencedColumnName = "uuid")
     private Course course;
+    
+    // Getter for course UUID only
+    public UUID getCourseUuid() {
+        return course != null ? course.getUuid() : null;
+    }
 
     @Column(nullable = false)
     private String title;

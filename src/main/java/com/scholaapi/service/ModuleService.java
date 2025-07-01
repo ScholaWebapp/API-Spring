@@ -1,8 +1,11 @@
 package com.scholaapi.service;
 
 import com.scholaapi.dto.ModuleRequest;
+import com.scholaapi.dto.ModuleResponseDTO;
+import com.scholaapi.dto.ResourceResponseDTO;
 import com.scholaapi.model.Course;
 import com.scholaapi.model.Module;
+import com.scholaapi.model.Resource;
 import com.scholaapi.repository.CourseRepository;
 import com.scholaapi.repository.ModuleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +27,36 @@ public class ModuleService {
     private CourseRepository courseRepository;
 
     // Get all modules in a course
-    public List<Module> getModulesByCourse(UUID courseUuid) {
+    public List<ModuleResponseDTO> getModulesByCourse(UUID courseUuid) {
         if (!courseRepository.existsById(courseUuid)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
         }
-        return moduleRepository.findByCourseUuidOrderByOrderIndexAsc(courseUuid);
+        List<Module> modules = moduleRepository.findByCourse_UuidOrderByOrderIndexAsc(courseUuid);
+        return modules.stream().map(this::toModuleDTO).toList();
+    }
+
+    public ModuleResponseDTO toModuleDTO(Module module) {
+        ModuleResponseDTO dto = new ModuleResponseDTO();
+        dto.setUuid(module.getUuid());
+        dto.setTitle(module.getTitle());
+        dto.setDescription(module.getDescription());
+        dto.setResources(module.getResources().stream().map(this::toResourceDTO).toList());
+        return dto;
+    }
+
+    private ResourceResponseDTO toResourceDTO(Resource resource) {
+        ResourceResponseDTO dto = new ResourceResponseDTO();
+        dto.setUuid(resource.getUuid());
+        dto.setResourceType(resource.getResourceType().name());
+        dto.setTitle(resource.getTitle());
+        dto.setDescription(resource.getDescription());
+        if (resource.getVideo() != null) {
+            dto.setVideoFilename(resource.getVideo().getFilename());
+        }
+        if (resource.getDocument() != null) {
+            dto.setDocumentFilename(resource.getDocument().getFilename());
+        }
+        return dto;
     }
 
     // Get specific module
@@ -43,27 +71,14 @@ public class ModuleService {
         Course course = courseRepository.findById(courseUuid)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found"));
 
-        List<Module> existingModules = moduleRepository.findByCourseUuidOrderByOrderIndexAsc(courseUuid);
-        int requestedOrderIndex = request.getOrderIndex() != null ? request.getOrderIndex() : existingModules.size() + 1;
-        
-        // Validate order index
-        if (requestedOrderIndex < 1) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order index must be at least 1");
-        }
-        
-        // Shift existing modules to make room for the new one
-        for (Module module : existingModules) {
-            if (module.getOrderIndex() >= requestedOrderIndex) {
-                module.setOrderIndex(module.getOrderIndex() + 1);
-                moduleRepository.save(module);
-            }
-        }
+        List<Module> existingModules = moduleRepository.findByCourse_UuidOrderByOrderIndexAsc(courseUuid);
+        int nextOrderIndex = existingModules.size() + 1;
 
         Module module = new Module();
         module.setCourse(course);
         module.setTitle(request.getTitle());
         module.setDescription(request.getDescription());
-        module.setOrderIndex(requestedOrderIndex);
+        module.setOrderIndex(nextOrderIndex);
 
         return moduleRepository.save(module);
     }
@@ -76,7 +91,7 @@ public class ModuleService {
 
         module.setTitle(request.getTitle());
         module.setDescription(request.getDescription());
-        module.setOrderIndex(request.getOrderIndex());
+        // Keep existing orderIndex - don't allow changing it through update
 
         return moduleRepository.save(module);
     }
