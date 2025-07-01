@@ -32,9 +32,11 @@ public class Document {
     @Column(name = "file_size")
     private Long fileSize;
 
+
     @Column(name = "file_url")
     private String fileUrl;
 
+    
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 } 
