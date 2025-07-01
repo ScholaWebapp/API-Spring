@@ -8,6 +8,7 @@ import com.scholaapi.model.Module;
 import com.scholaapi.model.Resource;
 import com.scholaapi.repository.CourseRepository;
 import com.scholaapi.repository.ModuleRepository;
+import com.scholaapi.repository.ResourceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,9 @@ public class ModuleService {
 
     @Autowired
     private CourseRepository courseRepository;
+    
+    @Autowired
+    private ResourceRepository resourceRepository;
 
     // Get all modules in a course
     public List<ModuleResponseDTO> getModulesByCourse(UUID courseUuid) {
@@ -96,12 +100,14 @@ public class ModuleService {
         return moduleRepository.save(module);
     }
 
-    // Delete module
+    // Delete module with recursive cascading
     @Transactional
     public void deleteModule(UUID moduleUuid) {
         if (!moduleRepository.existsById(moduleUuid)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Module not found");
         }
+        
+        // Delete the module (resources will be automatically deleted due to cascade=ALL)
         moduleRepository.deleteById(moduleUuid);
     }
 } 

@@ -4,6 +4,7 @@ import com.scholaapi.model.CourseEnrollment;
 import com.scholaapi.model.Course;
 import com.scholaapi.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -31,5 +32,12 @@ public interface CourseEnrollmentRepository extends JpaRepository<CourseEnrollme
     List<CourseEnrollment> findByUserUuidAndStatus(UUID userUuid, String status);
     
     // Delete all enrollments for a course
-    void deleteByCourseUuid(UUID courseUuid);
+    @Modifying
+    @Query("DELETE FROM CourseEnrollment ce WHERE ce.course.uuid = :courseUuid")
+    void deleteByCourseUuid(@Param("courseUuid") UUID courseUuid);
+    
+    // Delete all enrollments for a user
+    @Modifying
+    @Query("DELETE FROM CourseEnrollment ce WHERE ce.user.uuid = :userUuid")
+    void deleteByUserUuid(@Param("userUuid") UUID userUuid);
 } 

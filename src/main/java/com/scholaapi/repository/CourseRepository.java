@@ -4,6 +4,7 @@ import com.scholaapi.model.Course;
 import com.scholaapi.model.Organization;
 import com.scholaapi.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -29,4 +30,14 @@ public interface CourseRepository extends JpaRepository<Course, UUID> {
     // Find all courses except those in a specific organization
     @Query("SELECT c FROM Course c WHERE c.organization.uuid != :organizationUuid")
     List<Course> findAllExceptByOrganizationUuid(@Param("organizationUuid") UUID organizationUuid);
+    
+    // Delete courses by organization UUID
+    @Modifying
+    @Query("DELETE FROM Course c WHERE c.organization.uuid = :organizationUuid")
+    void deleteByOrganizationUuid(@Param("organizationUuid") UUID organizationUuid);
+    
+    // Delete courses by professor UUID
+    @Modifying
+    @Query("DELETE FROM Course c WHERE c.professor.uuid = :professorUuid")
+    void deleteByProfessorUuid(@Param("professorUuid") UUID professorUuid);
 } 
