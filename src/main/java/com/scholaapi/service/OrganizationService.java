@@ -2,6 +2,7 @@ package com.scholaapi.service;
 
 import com.scholaapi.model.Organization;
 import com.scholaapi.model.User;
+import com.scholaapi.model.Course;
 import com.scholaapi.repository.OrganizationRepository;
 import com.scholaapi.repository.UserRepository;
 import com.scholaapi.repository.CourseRepository;
@@ -25,6 +26,9 @@ public class OrganizationService {
     
     @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    private CourseService courseService;
 
     // Get all organizations created by a specific user
     public List<Organization> getOrganizationsByCreator(UUID creatorUuid) {
@@ -69,11 +73,14 @@ public class OrganizationService {
         if (!organizationRepository.existsById(organizationUuid)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Organization not found");
         }
-        
-        // Delete all courses in this organization (this will cascade to modules, resources, enrollments)
-        courseRepository.deleteByOrganizationUuid(organizationUuid);
-        
-        // Delete the organization
+
+        // Fetch all courses for the organization and delete them via the service
+        List<Course> courses = courseRepository.findByOrganizationUuid(organizationUuid);
+        for (Course course : courses) {
+            courseService.deleteCourse(course.getUuid());
+        }
+
+        // Now delete the organization
         organizationRepository.deleteById(organizationUuid);
     }
     

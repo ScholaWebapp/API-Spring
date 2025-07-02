@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import java.util.List;
 import java.util.UUID;
@@ -38,6 +40,9 @@ public class CourseService {
     
     @Autowired
     private ModuleRepository moduleRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     // Get all courses in the database
     public List<Course> getAllCourses() {
@@ -88,6 +93,7 @@ public class CourseService {
         
         // Delete all enrollments for this course
         courseEnrollmentRepository.deleteByCourseUuid(courseUuid);
+        entityManager.flush(); // Force the delete to execute
         
         // Delete all modules in this course (this will cascade to resources)
         moduleRepository.deleteByCourseUuid(courseUuid);
